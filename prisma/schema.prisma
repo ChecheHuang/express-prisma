@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+model Users {
+  id            Int    @id @default(autoincrement())
+  user_name     String
+  user_password String
+  user_email    String
+  user_avatar   String
+
+  created_cus_profiles CusProfile[] @relation("create_user")
+  edited_cus_profiles  CusProfile[] @relation("edit_user")
+}
+
+model CusProfile {
+  id             Int       @id @default(autoincrement())
+  create_user_id Int
+  cus_name       String
+  cus_number     String
+  cus_email      String
+  cus_idnumber   String
+  cus_birthday   DateTime?
+  cus_remark     String
+  cus_status     String
+  cus_level      String
+  cus_avatar     String
+  edit_user_id   Int?
+  update_time    DateTime? @updatedAt
+
+  create_user Users             @relation("create_user", fields: [create_user_id], references: [id], onDelete: Cascade)
+  edit_user   Users?            @relation("edit_user", fields: [edit_user_id], references: [id], onDelete: Cascade)
+  cus_labels  CusProfileLabel[]
+
+  @@map("cus_profile")
+}
+
+model CusProfileLabel {
+  id       Int @id @default(autoincrement())
+  cus_id   Int
+  label_id Int
+
+  cus_profile CusProfile @relation(fields: [cus_id], references: [id], onDelete: Cascade)
+  label       Labels     @relation(fields: [label_id], references: [id], onDelete: Cascade)
+
+  @@map("cus_profile_label")
+}
+
+model Labels {
+  id         Int    @id @default(autoincrement())
+  label_name String @unique
+
+  cus_profiles CusProfileLabel[]
+}
