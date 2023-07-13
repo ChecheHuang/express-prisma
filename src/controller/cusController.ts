@@ -204,6 +204,7 @@ function formatData(result: resultType) {
       (labelInfo: { label: Labels }) => labelInfo.label
     );
     return {
+      id,
       key: id,
       cus_name,
       cus_number,
