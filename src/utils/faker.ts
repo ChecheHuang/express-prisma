@@ -50,18 +50,15 @@ async function createCusProfileLabels(
   cusProfileIds: number[],
   labelIds: number[]
 ) {
-  const cusProfileLabelsData = [];
-
   for (const cusProfileId of cusProfileIds) {
     for (const labelId of labelIds) {
       const randomNum = Math.random();
       if (randomNum <= 0.25) {
-        cusProfileLabelsData.push({ cus_id: cusProfileId, label_id: labelId });
+        const data = { cus_id: cusProfileId, label_id: labelId };
+        await prisma.cusProfileLabel.create({ data: data });
       }
     }
   }
-
-  await prisma.cusProfileLabel.createMany({ data: cusProfileLabelsData });
 }
 
 async function createCusProfile(user: Users, length: number = 100) {
@@ -119,10 +116,10 @@ async function main() {
   await prisma.labels.deleteMany();
   await prisma.cusProfileLabel.deleteMany();
   await prisma.cusProfile.deleteMany();
-  await prisma.$executeRaw`ALTER TABLE users AUTO_INCREMENT = 1;`;
-  await prisma.$executeRaw`ALTER TABLE labels AUTO_INCREMENT = 1;`;
-  await prisma.$executeRaw`ALTER TABLE cus_profile AUTO_INCREMENT = 1;`;
-  await prisma.$executeRaw`ALTER TABLE cus_profile_label AUTO_INCREMENT = 1;`;
+  // await prisma.$executeRaw`ALTER TABLE users AUTO_INCREMENT = 1;`;
+  // await prisma.$executeRaw`ALTER TABLE labels AUTO_INCREMENT = 1;`;
+  // await prisma.$executeRaw`ALTER TABLE cus_profile AUTO_INCREMENT = 1;`;
+  // await prisma.$executeRaw`ALTER TABLE cus_profile_label AUTO_INCREMENT = 1;`;
   //todo 創建一個會員
   const createUser = await prisma.users.create({
     data: {

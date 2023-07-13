@@ -135,12 +135,20 @@ export const edit: ExpressControllerType = async (req, res, next) => {
         cus_level,
         cus_labels: {
           deleteMany: {},
-          createMany: {
-            data: create_cus_labels,
-          },
+          // createMany: {
+          //   data: create_cus_labels,
+          // },
         },
       },
     });
+    for (const { label_id } of create_cus_labels) {
+      await prisma.cusProfileLabel.create({
+        data: {
+          cus_id: parseInt(id),
+          label_id,
+        },
+      });
+    }
     res.message("成功修改").send();
   } catch (err) {
     next(err);
