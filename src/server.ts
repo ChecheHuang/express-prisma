@@ -3,10 +3,11 @@ loadEnv();
 import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import responseFormatter from "./middleware/responseFormatter";
+import responseFormatter from "@/middleware/responseFormatter";
 import bodyParser from "body-parser";
-import logMiddleware from "./middleware/logMiddleware";
-import apiRouter from "./routes/api";
+import logMiddleware from "@/middleware/logMiddleware";
+import apiRouter from "@/routes/api";
+import "dotenv/config";
 
 const app = express();
 app.use(cors());
@@ -14,10 +15,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(responseFormatter);
 app.use(logMiddleware);
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
 app.use("/api", apiRouter);
 

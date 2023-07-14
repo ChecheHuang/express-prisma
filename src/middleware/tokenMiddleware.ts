@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ExpressControllerType } from "../types";
 declare global {
