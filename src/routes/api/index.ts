@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import tokenMiddleware from "@/middleware/tokenMiddleware";
+import tokenMiddleware from "../../middleware/tokenMiddleware";
 
 import userRouter from "./user/route";
 import labelRouter from "./label/route";

@@ -1,7 +1,12 @@
 import express from "express";
 const cusRouter = express.Router();
 
-import { index, create, edit, destroy } from "@/controller/cusController";
+import {
+  index,
+  create,
+  edit,
+  destroy,
+} from "../../../controller/cusController";
 
 cusRouter.get("/", index);
 cusRouter.post("/", create);

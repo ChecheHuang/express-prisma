@@ -50,50 +50,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.destroy = exports.edit = exports.create = exports.index2 = exports.index = void 0;
+exports.destroy = exports.edit = exports.create = exports.index = void 0;
 var prisma_1 = __importDefault(require("../utils/prisma"));
 var index = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, data, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var page, size, orderBy, where, requestData, skipItems, key, value, total, take, skip, result, data, error_1;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, prisma_1.default.cusProfile.findMany({
-                        orderBy: { id: "asc" },
-                        include: {
-                            cus_labels: {
-                                include: { label: true },
-                            },
-                        },
-                    })];
-            case 1:
-                result = _a.sent();
-                data = formatData(result);
-                // res.data(data).send();
-                res.json({ status: "success", data: data });
-                return [3 /*break*/, 3];
-            case 2:
-                error_1 = _a.sent();
-                next(error_1);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); };
-exports.index = index;
-var index2 = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var page, size, where, requestData, key, value, total, take, skip, result, data, error_2;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _b.trys.push([0, 3, , 4]);
+                _c.trys.push([0, 3, , 4]);
                 page = Number(req.query.page || req.body.page || 1);
                 size = Number(req.query.size || req.body.size);
+                orderBy = typeof req.query.order === "string" &&
+                    req.query.order !== "undefined" &&
+                    typeof req.query.sort === "string"
+                    ? (_a = {},
+                        _a[req.query.sort === "cus_age"
+                            ? "cus_birthday"
+                            : req.query.sort] = req.query.order.replace(/end/g, ""),
+                        _a) : { id: "asc" };
                 where = {};
                 requestData = __assign(__assign({}, req.query), req.body);
+                skipItems = ["page", "size", "sort", "order"];
                 for (key in requestData) {
-                    if (key === "page" || key === "size") {
+                    if (skipItems.includes(key)) {
                         continue; // 跳過 page 和 size 屬性
                     }
                     value = requestData[key];
@@ -111,17 +91,17 @@ var index2 = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                     }
                     else {
                         // 其他 key 保持原來的過濾條件
-                        where = __assign(__assign({}, where), (_a = {}, _a[key] = { contains: value }, _a));
+                        where = __assign(__assign({}, where), (_b = {}, _b[key] = { contains: value }, _b));
                     }
                 }
                 return [4 /*yield*/, prisma_1.default.cusProfile.count({ where: where })];
             case 1:
-                total = _b.sent();
+                total = _c.sent();
                 take = size ? size : total;
                 skip = (page - 1) * take;
                 return [4 /*yield*/, prisma_1.default.cusProfile.findMany({
                         where: where,
-                        orderBy: { id: "asc" },
+                        orderBy: orderBy,
                         include: {
                             cus_labels: {
                                 include: { label: true },
@@ -131,26 +111,27 @@ var index2 = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                         take: take,
                     })];
             case 2:
-                result = _b.sent();
+                result = _c.sent();
                 data = formatData(result);
-                res.json({ status: "success", data: { data: data, total: total } });
+                // res.json({ status: "success", data: { data, total } });
+                res.data({ data: data, total: total }).send();
                 return [3 /*break*/, 4];
             case 3:
-                error_2 = _b.sent();
-                next(error_2);
+                error_1 = _c.sent();
+                next(error_1);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
-exports.index2 = index2;
+exports.index = index;
 var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, cus_name, cus_number, cus_email, cus_idnumber, cus_birthday, cus_remark, cus_status, cus_level, error_3;
+    var _a, cus_name, cus_number, cus_email, cus_idnumber, cus_birthday, cus_remark, cus_status, cus_level, cus_avatar, error_2;
     var _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
-                _a = req.body, cus_name = _a.cus_name, cus_number = _a.cus_number, cus_email = _a.cus_email, cus_idnumber = _a.cus_idnumber, cus_birthday = _a.cus_birthday, cus_remark = _a.cus_remark, cus_status = _a.cus_status, cus_level = _a.cus_level;
+                _a = req.body, cus_name = _a.cus_name, cus_number = _a.cus_number, cus_email = _a.cus_email, cus_idnumber = _a.cus_idnumber, cus_birthday = _a.cus_birthday, cus_remark = _a.cus_remark, cus_status = _a.cus_status, cus_level = _a.cus_level, cus_avatar = _a.cus_avatar;
                 _c.label = 1;
             case 1:
                 _c.trys.push([1, 3, , 4]);
@@ -165,14 +146,15 @@ var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                             cus_remark: cus_remark,
                             cus_status: cus_status,
                             cus_level: cus_level,
+                            cus_avatar: cus_avatar,
                         },
                     })];
             case 2:
                 _c.sent();
                 return [2 /*return*/, res.message("新增成功").send()];
             case 3:
-                error_3 = _c.sent();
-                next(error_3);
+                error_2 = _c.sent();
+                next(error_2);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -180,7 +162,7 @@ var create = function (req, res, next) { return __awaiter(void 0, void 0, void 0
 }); };
 exports.create = create;
 var edit = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, _a, cus_name, cus_number, cus_email, cus_idnumber, cus_birthday, cus_remark, cus_status, cus_level, label_names, create_cus_labels, err_1;
+    var id, _a, cus_name, cus_number, cus_email, cus_idnumber, cus_birthday, cus_remark, cus_status, cus_level, label_names, create_cus_labels, _i, create_cus_labels_1, label_id, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -191,7 +173,7 @@ var edit = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                 }); });
                 _b.label = 1;
             case 1:
-                _b.trys.push([1, 3, , 4]);
+                _b.trys.push([1, 7, , 8]);
                 return [4 /*yield*/, prisma_1.default.cusProfile.update({
                         where: { id: parseInt(id) },
                         data: {
@@ -205,21 +187,39 @@ var edit = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                             cus_level: cus_level,
                             cus_labels: {
                                 deleteMany: {},
-                                createMany: {
-                                    data: create_cus_labels,
-                                },
+                                // createMany: {
+                                //   data: create_cus_labels,
+                                // },
                             },
                         },
                     })];
             case 2:
                 _b.sent();
-                res.message("成功修改").send();
-                return [3 /*break*/, 4];
+                _i = 0, create_cus_labels_1 = create_cus_labels;
+                _b.label = 3;
             case 3:
+                if (!(_i < create_cus_labels_1.length)) return [3 /*break*/, 6];
+                label_id = create_cus_labels_1[_i].label_id;
+                return [4 /*yield*/, prisma_1.default.cusProfileLabel.create({
+                        data: {
+                            cus_id: parseInt(id),
+                            label_id: label_id,
+                        },
+                    })];
+            case 4:
+                _b.sent();
+                _b.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 3];
+            case 6:
+                res.message("成功修改").send();
+                return [3 /*break*/, 8];
+            case 7:
                 err_1 = _b.sent();
                 next(err_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
@@ -262,12 +262,13 @@ var destroy = function (req, res, next) { return __awaiter(void 0, void 0, void 
 exports.destroy = destroy;
 function formatData(result) {
     var data = result.map(function (cus) {
-        var id = cus.id, cus_name = cus.cus_name, cus_number = cus.cus_number, cus_email = cus.cus_email, cus_idnumber = cus.cus_idnumber, cus_remark = cus.cus_remark, cus_status = cus.cus_status, cus_level = cus.cus_level, cus_birthday = cus.cus_birthday, cus_labels = cus.cus_labels;
-        var cus_age = calculateAge(cus_birthday);
+        var id = cus.id, cus_name = cus.cus_name, cus_number = cus.cus_number, cus_email = cus.cus_email, cus_idnumber = cus.cus_idnumber, cus_remark = cus.cus_remark, cus_status = cus.cus_status, cus_level = cus.cus_level, cus_birthday = cus.cus_birthday, cus_labels = cus.cus_labels, cus_avatar = cus.cus_avatar;
+        var cus_age = calculateAge(cus_birthday) + 1;
         var formatDate = cus_birthday === null || cus_birthday === void 0 ? void 0 : cus_birthday.toISOString().substring(0, 10);
         var label_names = cus_labels.map(function (labelInfo) { return labelInfo.label; });
         return {
             id: id,
+            key: id,
             cus_name: cus_name,
             cus_number: cus_number,
             cus_email: cus_email,
@@ -278,6 +279,7 @@ function formatData(result) {
             cus_status: cus_status,
             cus_level: cus_level,
             label_names: label_names,
+            cus_avatar: cus_avatar,
         };
     });
     return data;
@@ -289,7 +291,7 @@ function calculateAge(birthday) {
     var monthsDiff = currentDate.getMonth() - birthDate.getMonth();
     var daysDiff = currentDate.getDate() - birthDate.getDate();
     if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff < 0)) {
-        return yearsDiff - 1;
+        return yearsDiff;
     }
     return yearsDiff;
 }

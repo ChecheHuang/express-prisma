@@ -14,7 +14,7 @@ var logMiddleware = function (req, res, next) {
     res.on("finish", function () {
         var end = new Date();
         var duration = end.getTime() - start.getTime();
-        console.log("\u8A08\u6642".concat(duration, "\u8C6A\u79D2"));
+        console.log("\u8A08\u6642".concat(duration, "\u6BEB\u79D2"));
     });
     next();
 };

@@ -53,8 +53,8 @@ var index = function (req, res, next) { return __awaiter(void 0, void 0, void 0,
                             label_name: true,
                         },
                         orderBy: {
-                            id: "asc"
-                        }
+                            id: "asc",
+                        },
                     })];
             case 1:
                 labels = _a.sent();

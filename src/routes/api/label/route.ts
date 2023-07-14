@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
 const labelRouter = express.Router();
-const { create, destroy, index } = require("@/controller/labelController");
+
+import { create, destroy, index } from "../../../controller/labelController";
 
 labelRouter.get("/", index);
 labelRouter.post("/", create);

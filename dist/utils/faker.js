@@ -1,8 +1,4 @@
 "use strict";
-var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -79,25 +75,34 @@ function randomDate() {
 }
 function createCusProfileLabels(cusProfileIds, labelIds) {
     return __awaiter(this, void 0, void 0, function () {
-        var cusProfileLabelsData, _i, cusProfileIds_1, cusProfileId, _a, labelIds_1, labelId, randomNum;
+        var _i, cusProfileIds_1, cusProfileId, _a, labelIds_1, labelId, randomNum, data;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    cusProfileLabelsData = [];
-                    for (_i = 0, cusProfileIds_1 = cusProfileIds; _i < cusProfileIds_1.length; _i++) {
-                        cusProfileId = cusProfileIds_1[_i];
-                        for (_a = 0, labelIds_1 = labelIds; _a < labelIds_1.length; _a++) {
-                            labelId = labelIds_1[_a];
-                            randomNum = Math.random();
-                            if (randomNum <= 0.25) {
-                                cusProfileLabelsData.push({ cus_id: cusProfileId, label_id: labelId });
-                            }
-                        }
-                    }
-                    return [4 /*yield*/, prisma.cusProfileLabel.createMany({ data: cusProfileLabelsData })];
+                    _i = 0, cusProfileIds_1 = cusProfileIds;
+                    _b.label = 1;
                 case 1:
+                    if (!(_i < cusProfileIds_1.length)) return [3 /*break*/, 6];
+                    cusProfileId = cusProfileIds_1[_i];
+                    _a = 0, labelIds_1 = labelIds;
+                    _b.label = 2;
+                case 2:
+                    if (!(_a < labelIds_1.length)) return [3 /*break*/, 5];
+                    labelId = labelIds_1[_a];
+                    randomNum = Math.random();
+                    if (!(randomNum <= 0.25)) return [3 /*break*/, 4];
+                    data = { cus_id: cusProfileId, label_id: labelId };
+                    return [4 /*yield*/, prisma.cusProfileLabel.create({ data: data })];
+                case 3:
                     _b.sent();
-                    return [2 /*return*/];
+                    _b.label = 4;
+                case 4:
+                    _a++;
+                    return [3 /*break*/, 2];
+                case 5:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 6: return [2 /*return*/];
             }
         });
     });
@@ -119,14 +124,15 @@ function createCusProfile(user, length) {
                     return [4 /*yield*/, prisma.cusProfile.create({
                             data: {
                                 create_user_id: user.id,
-                                cus_name: faker_1.faker.person.lastName(),
+                                cus_name: faker_1.fakerZH_TW.person.fullName(),
                                 cus_number: randomPhone(),
-                                cus_email: faker_1.faker.internet.exampleEmail(),
+                                cus_email: faker_1.fakerZH_TW.internet.email(),
                                 cus_idnumber: generateTWID(),
                                 cus_birthday: randomDate(),
-                                cus_remark: faker_1.faker.commerce.product(),
+                                cus_remark: faker_1.fakerZH_TW.commerce.product(),
                                 cus_status: getRandomItemFromArray(statusOptions),
                                 cus_level: getRandomItemFromArray(levelOptions),
+                                cus_avatar: faker_1.fakerZH_TW.image.avatar(),
                             },
                         })];
                 case 2:
@@ -201,18 +207,6 @@ function main() {
                     return [4 /*yield*/, prisma.cusProfile.deleteMany()];
                 case 4:
                     _a.sent();
-                    return [4 /*yield*/, prisma.$executeRaw(templateObject_1 || (templateObject_1 = __makeTemplateObject(["ALTER TABLE users AUTO_INCREMENT = 1;"], ["ALTER TABLE users AUTO_INCREMENT = 1;"])))];
-                case 5:
-                    _a.sent();
-                    return [4 /*yield*/, prisma.$executeRaw(templateObject_2 || (templateObject_2 = __makeTemplateObject(["ALTER TABLE labels AUTO_INCREMENT = 1;"], ["ALTER TABLE labels AUTO_INCREMENT = 1;"])))];
-                case 6:
-                    _a.sent();
-                    return [4 /*yield*/, prisma.$executeRaw(templateObject_3 || (templateObject_3 = __makeTemplateObject(["ALTER TABLE cus_profile AUTO_INCREMENT = 1;"], ["ALTER TABLE cus_profile AUTO_INCREMENT = 1;"])))];
-                case 7:
-                    _a.sent();
-                    return [4 /*yield*/, prisma.$executeRaw(templateObject_4 || (templateObject_4 = __makeTemplateObject(["ALTER TABLE cus_profile_label AUTO_INCREMENT = 1;"], ["ALTER TABLE cus_profile_label AUTO_INCREMENT = 1;"])))];
-                case 8:
-                    _a.sent();
                     return [4 /*yield*/, prisma.users.create({
                             data: {
                                 user_name: "Carl",
@@ -221,21 +215,21 @@ function main() {
                                 user_avatar: "https://images.pexels.com/photos/6875732/pexels-photo-6875732.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
                             },
                         })];
-                case 9:
+                case 5:
                     createUser = _a.sent();
                     console.log("創建會員");
-                    return [4 /*yield*/, createCusProfile(createUser, 20000)];
-                case 10:
+                    return [4 /*yield*/, createCusProfile(createUser, 5000)];
+                case 6:
                     cusProfileIds = _a.sent();
                     console.log("創建客戶");
                     return [4 /*yield*/, createLabels()];
-                case 11:
+                case 7:
                     labelIds = _a.sent();
                     console.log("創建label");
                     // return
                     //todo 創建客戶label資料
                     return [4 /*yield*/, createCusProfileLabels(cusProfileIds, labelIds)];
-                case 12:
+                case 8:
                     // return
                     //todo 創建客戶label資料
                     _a.sent();
@@ -270,4 +264,3 @@ main()
         }
     });
 }); });
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4;
